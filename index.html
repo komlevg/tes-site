@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Тепло Энерго Сервис — экспертиза промышленной безопасности и пожарные системы</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
   <meta name="description" content="Тепло Энерго Сервис — экспертиза промышленной безопасности, техническое диагностирование, монтаж и обслуживание охранно-пожарных систем в Липецке. Лицензии Ростехнадзора.">
 <style>
   .card {
@@ -62,7 +62,7 @@
   <!-- Hero -->
 <section class="relative bg-gradient-to-br from-green-600 to-violet-600 text-white">
   <div class="w-full px-6 py-6 text-center">
-    <h1 class="max-w-5xl mx-auto text-4xl md:text-5xl font-bold mb-4">Комплексные решения в области охранно-пожарной сигнализации и экспертизе промышленной безопастности</h1>
+    <h1 class="max-w-5xl mx-auto text-4xl md:text-5xl font-bold mb-4">Комплексные решения в области охранно-пожарной сигнализации и экспертизе промышленной безопасности</h1>
     <p class="text-lg text-white mb-14">От проектирования до технического обслуживания</p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -320,8 +320,11 @@
     <p class="text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">Мы предоставляем полный цикл услуг по проектированию, установке и обслуживанию охранно-пожарных систем. Работаем в соответствии с действующими нормами и имеем все необходимые лицензии.</p>
 
     <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
-      <div class="bg-white border rounded-xl p-3 cursor-pointer" onclick="openLightbox('license.jpg')">
-        <img src="license.jpg" alt="Лицензия Ростехнадзора ООО Тепло Энерго Сервис" class="w-full h-auto rounded-lg">
+      <div class="bg-white border rounded-xl p-3 cursor-pointer"
+           onclick="openLicenseGallery()">
+        <img src="license.jpg"
+             alt="Лицензия Ростехнадзора ООО Тепло Энерго Сервис"
+             class="w-full h-auto rounded-lg">
       </div>
       <div class="bg-white border rounded-xl p-3 cursor-pointer" onclick="openLightbox('license2.png')">
         <img src="license2.png" alt="Лицензия МЧС ООО Тепло Энерго Сервис" class="w-full h-auto rounded-lg">
@@ -334,15 +337,137 @@
 </section>
 
 <!-- Lightbox -->
-<dialog id="lightbox" class="p-0 rounded-2xl shadow-2xl max-w-3xl w-full backdrop:bg-black/70" onclick="this.close()">
-  <img id="lightbox-img" src="" alt="Лицензия" class="w-full h-auto rounded-2xl block">
+<dialog id="lightbox"
+        class="p-0 rounded-2xl shadow-2xl max-w-4xl w-full bg-transparent backdrop:bg-black/70">
+
+  <div class="relative bg-white rounded-2xl p-3">
+
+    <!-- Закрыть -->
+    <button
+      type="button"
+      onclick="document.getElementById('lightbox').close()"
+      class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/70 text-white text-2xl hover:bg-black transition">
+      ×
+    </button>
+
+    <!-- Изображение -->
+    <img id="lightbox-img"
+         src=""
+         alt="Лицензия ООО Тепло Энерго Сервис"
+         class="w-full h-auto rounded-xl block">
+
+    <!-- Стрелка назад — только для первой лицензии -->
+    <button
+      id="license-prev"
+      type="button"
+      onclick="previousLicensePage(event)"
+      class="hidden absolute left-5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/70 text-white text-3xl hover:bg-black transition">
+      ‹
+    </button>
+
+    <!-- Стрелка вперёд — только для первой лицензии -->
+    <button
+      id="license-next"
+      type="button"
+      onclick="nextLicensePage(event)"
+      class="hidden absolute right-5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/70 text-white text-3xl hover:bg-black transition">
+      ›
+    </button>
+
+    <!-- Номер страницы — только для первой лицензии -->
+    <div id="license-page-counter"
+         class="hidden absolute bottom-5 left-1/2 -translate-x-1/2 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+      1 / 2
+    </div>
+
+  </div>
+
 </dialog>
 
 <script>
+  const licensePages = [
+    'license.jpg',
+    'license1.png'
+  ];
+
+  let currentLicensePage = 0;
+  let isLicenseGallery = false;
+
+  function openLicenseGallery() {
+    isLicenseGallery = true;
+    currentLicensePage = 0;
+
+    showLicenseControls();
+    updateLicensePage();
+
+    document.getElementById('lightbox').showModal();
+  }
+
   function openLightbox(src) {
+    isLicenseGallery = false;
+
+    hideLicenseControls();
+
     document.getElementById('lightbox-img').src = src;
     document.getElementById('lightbox').showModal();
   }
+
+  function updateLicensePage() {
+    document.getElementById('lightbox-img').src =
+      licensePages[currentLicensePage];
+
+    document.getElementById('license-page-counter').textContent =
+      `${currentLicensePage + 1} / ${licensePages.length}`;
+  }
+
+  function nextLicensePage(event) {
+    event.stopPropagation();
+
+    currentLicensePage =
+      (currentLicensePage + 1) % licensePages.length;
+
+    updateLicensePage();
+  }
+
+  function previousLicensePage(event) {
+    event.stopPropagation();
+
+    currentLicensePage =
+      (currentLicensePage - 1 + licensePages.length) %
+      licensePages.length;
+
+    updateLicensePage();
+  }
+
+  function showLicenseControls() {
+    document.getElementById('license-prev').classList.remove('hidden');
+    document.getElementById('license-next').classList.remove('hidden');
+    document.getElementById('license-page-counter').classList.remove('hidden');
+  }
+
+  function hideLicenseControls() {
+    document.getElementById('license-prev').classList.add('hidden');
+    document.getElementById('license-next').classList.add('hidden');
+    document.getElementById('license-page-counter').classList.add('hidden');
+  }
+
+  document.addEventListener('keydown', function(event) {
+    const lightbox = document.getElementById('lightbox');
+
+    if (!lightbox.open) return;
+
+    if (isLicenseGallery && event.key === 'ArrowRight') {
+      nextLicensePage(event);
+    }
+
+    if (isLicenseGallery && event.key === 'ArrowLeft') {
+      previousLicensePage(event);
+    }
+
+    if (event.key === 'Escape') {
+      lightbox.close();
+    }
+  });
 </script>
 
   <!-- Contacts -->
